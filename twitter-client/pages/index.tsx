@@ -5,6 +5,9 @@ import { BiHash, BiHomeCircle, BiMoney, BiUser } from "react-icons/bi";
 import { SlOptions } from "react-icons/sl";
 import FeedCard from "@/components/FeedCard";
 import { GoogleLogin,CredentialResponse } from '@react-oauth/google';
+import { toast } from "react-hot-toast";
+import { graphqlClient } from "../client/api";
+import { verifyUserGoogleTokenQuery } from "@/graphql/query/user";
 
 interface TwitterSidebarButton {
   title: string;
@@ -46,28 +49,26 @@ const sidebarMenuItems: TwitterSidebarButton[] = [
   },
 ];
 export default function Home() {
-  //   const handleLoginWithGoogle = useCallback(
-  //   async (cred: CredentialResponse) => {
-  //   //   const googleToken = cred.credential;
-  //   //   if (!googleToken) return toast.error(`Google token not found`);
+    const handleLoginWithGoogle = useCallback(
+    async (cred: CredentialResponse) => {
+      const googleToken = cred.credential;
+      if (!googleToken) return toast.error(`Google token not found`);
 
-  //   //   const { verifyGoogleToken } = await graphqlClient.request(
-  //   //     verifyUserGoogleTokenQuery,
-  //   //     { token: googleToken }
-  //   //   );
+      const { verifyGoogleToken } = await graphqlClient.request(
+        verifyUserGoogleTokenQuery,
+        { token: googleToken }
+      ); 
 
-  //   //   toast.success("Verified Success");
-  //   //   console.log(verifyGoogleToken);
+      toast.success("Verified Success");
+      console.log(verifyGoogleToken);
 
-  //   //   if (verifyGoogleToken)
-  //   //     window.localStorage.setItem("__twitter_token", verifyGoogleToken);
-  //   // },
-  //   []
-  // );
+      if (verifyGoogleToken)
+        window.localStorage.setItem("__twitter_token", verifyGoogleToken);
+    },
+    []
+  );
 
-  const handleLoginWithGoogle = (cred :CredentialResponse) => {
-    console.log(cred)
-  }
+
   return (
 <div>
       <div className="grid grid-cols-12 h-screen w-screen px-56">
