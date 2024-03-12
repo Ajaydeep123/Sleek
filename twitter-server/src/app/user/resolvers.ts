@@ -51,7 +51,6 @@ const queries = {
         
         const userToken = JWTService.generateTokenForUser(userInDb);
 
-        console.log(data);
         return userToken;
     },
 };

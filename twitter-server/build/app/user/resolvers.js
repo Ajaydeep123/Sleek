@@ -43,7 +43,6 @@ const queries = {
         if (!userInDb)
             throw new Error("User with email not found");
         const userToken = jwt_1.default.generateTokenForUser(userInDb);
-        console.log(data);
         return userToken;
     }),
 };
