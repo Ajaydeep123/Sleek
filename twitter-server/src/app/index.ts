@@ -3,25 +3,21 @@ import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import bodyParser from "body-parser";
 import { prismaClient } from "../clients/db";
-
+import { User } from "./user";
 export async function initServer(){
     const app = express();
     app.use(bodyParser.json());
-    prismaClient.user.create({
-        data:{
-            
-        }
-    })
+
     const server = new ApolloServer({
         typeDefs:`
+        ${User.types}
+        
         type Query{
-            sayHello:String,
-            sayHelloToMe(name:String!):String
+            ${User.queries}
         }`,
         resolvers:{
             Query:{
-                sayHello:() => `Hello World from Apollo Server`,
-                sayHelloToMe:(parent:any, {name}:{name:string}) => `Hello ${name} from Apollo Server`
+                ...User.resolvers.queries
             },
         },
     });
