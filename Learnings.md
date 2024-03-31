@@ -11,3 +11,10 @@
 ![alt text](image.png)
 
 - ```useMutation``` we use this for ( POST, PUT, DELETE requests) and manage their state.
+
+
+#### S3
+
+- create a new user with IAM
+- Give it S3fullaccess Policy
+- Go to S3, create a new bucket with "Block all public access" unchecked

@@ -12,8 +12,11 @@ const nextConfig = {
         {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com',
-        port: '',
-        
+        port: '',      
+      },
+      {
+        protocol:"https",
+        hostname:"**.amazonaws.com",
       }
     ],
   },
