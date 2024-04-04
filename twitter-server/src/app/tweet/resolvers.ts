@@ -3,16 +3,13 @@ import { prismaClient } from "../../clients/db";
 import { GraphqlContext } from "../../interfaces";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import TweetService, { CreateTweetPayload } from "../../services/tweet";
+import UserService from "../../services/user";
 
-interface CreateTweetPayload {
-  content: string;
-  imageURL?: string;
-}
 
 const s3Client = new S3Client({})
 const queries = {
-  getAllTweets: () =>
-    prismaClient.tweet.findMany({ orderBy: { createdAt: "desc" } }),
+  getAllTweets: () => TweetService.getAllTweets(),
 
   getSignedURLForTweet: async (
     parent: any,
@@ -49,13 +46,10 @@ const mutations = {
     ctx: GraphqlContext
   ) => {
     if (!ctx.user) throw new Error("You are not authenticated");
-    const tweet = await prismaClient.tweet.create({
-      data: {
-        content: payload.content,
-        imageURL: payload.imageURL,
-        author: { connect: { id: ctx.user.id } },
-      },
-    });
+    const tweet = await TweetService.createTweet({
+      ...payload,
+      userId: ctx.user.id,
+    });    
 
     return tweet;
   },
@@ -63,8 +57,7 @@ const mutations = {
 
 const extraResolvers = {
   Tweet: {
-    author: (parent: Tweet) =>
-      prismaClient.user.findUnique({ where: { id: parent.authorId } }),
+    author: (parent: Tweet) => UserService.getUserById(parent.authorId),
   },
 };
 
